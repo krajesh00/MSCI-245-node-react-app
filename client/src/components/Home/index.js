@@ -6,17 +6,22 @@ import { MuiThemeProvider, createTheme } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
+import { useState } from 'react';
+import { Select, MenuItem, TextField, Radio, FormControl, InputLabel, Button } from '@material-ui/core';
+
 
 
 //Dev mode
-const serverURL = ""; //enable for dev mode
+//const serverURL = ""; //enable for dev mode
 
 //Deployment mode instructions
-//const serverURL = "http://ov-research-4.uwaterloo.ca:PORT"; //enable for deployed mode; Change PORT to the port number given to you;
+const serverURL = "http://ec2-18-188-101-79.us-east-2.compute.amazonaws.com:3004"; //enable for deployed mode; Change PORT to the port number given to you;
 //To find your port number: 
 //ssh to ov-research-4.uwaterloo.ca and run the following command: 
 //env | grep "PORT"
 //copy the number only and paste it in the serverURL in place of PORT, e.g.: const serverURL = "http://ov-research-4.uwaterloo.ca:3000";
+
+
 
 const fetch = require("node-fetch");
 
@@ -50,7 +55,7 @@ const styles = theme => ({
   },
 
   mainMessageContainer: {
-    marginTop: "20vh",
+    marginTop: "5vh",
     marginLeft: theme.spacing(20),
     [theme.breakpoints.down('xs')]: {
       marginLeft: theme.spacing(4),
@@ -64,8 +69,279 @@ const styles = theme => ({
     maxWidth: 250,
     paddingBottom: theme.spacing(2),
   },
-
+  
 });
+
+
+
+const MuiSelect = ({ selectedMovie, onChange }) => {
+
+  const [movies, setMovies] = useState([])
+
+  React.useEffect(() => {
+    getMovies();
+  }, []);
+  
+  const getMovies = () => {
+    callApiGetMovies()
+      .then(res => {
+        console.log("callApiGetMovies returned: ", res)
+        var parsed = JSON.parse(res.express);
+        console.log("callApiGetMovies parsed: ", parsed);
+        setMovies(parsed);
+      })
+  }
+  
+  const callApiGetMovies = async () => {
+    const url = serverURL + "/api/getMovies";
+    console.log(url);
+  
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    });
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    console.log("movies found : ", body);
+    return body;
+  }
+
+  
+
+  return (
+    <FormControl sx ={{ m: 1, width: 300, mt: 3}}>
+      <InputLabel id= 'simpleLabel'>Select Movie</InputLabel>
+      <Select labelId='simpleLabel' label='Select a Movie' value = {selectedMovie} displayEmpty onChange = {event => onChange(event.target.value)}>
+      <MenuItem value = 'Select Movie' disabled >Select Movie</MenuItem>
+      {movies.map((movie) => {
+        return(
+          <MenuItem value = {movie}>{movie.name}</MenuItem>
+        )
+      })}
+    </Select>
+    </FormControl>
+    
+  );
+}
+
+const MuiTextField = ({ eneteredTitle, onChange}) => {
+
+  return(
+    <TextField
+     label ='Enter Review Title'
+     value ={eneteredTitle}
+     onChange = {event => onChange(event.target.value)}
+    />
+  )
+  
+}
+
+const MuiTextFieldMulti = ({ enteredReview, onChange}) => {
+
+  return(
+    <TextField
+     label ='Review Text'
+     multiline
+     style={{width: '100%'}}
+     value ={enteredReview}
+     onChange = {event => onChange(event.target.value)}
+    /> 
+  )
+  
+}
+
+const MuiRadioSelect = ({ selectedRating, onChange }) => {
+  return ( 
+    <div>
+      <h5>Select a rating for the movie out of 5</h5>
+      <div>
+      <span>1</span>
+      <Radio
+      value='1'
+      checked = {selectedRating === '1'}
+      color = 'primary'
+      onChange = {event => onChange(event.target.value)}
+      />
+      </div>
+
+      <div>
+      <span>2</span>
+      <Radio
+      value='2'
+      checked = {selectedRating === '2'}
+      color = 'primary'
+      onChange = {event => onChange(event.target.value)}
+      />
+      </div>
+
+      <div>
+      <span>3</span>
+      <Radio
+      value='3'
+      checked = {selectedRating === '3'}
+      color = 'primary'
+      onChange = {event => onChange(event.target.value)}
+      />
+      </div>
+
+      <div>
+      <span>4</span>
+      <Radio
+      value='4'
+      checked = {selectedRating === '4'}
+      color = 'primary'
+      onChange = {event => onChange(event.target.value)}
+      />
+      </div>
+
+      <div>
+      <span>5</span>
+      <Radio
+      value='5'
+      checked = {selectedRating === '5'}
+      color = 'primary'
+      onChange = {event => onChange(event.target.value)}
+      />
+      </div>    
+    </div>
+      
+  )
+}
+
+
+const Review = () =>  {
+  const [selectedMovie, setSelectedMovie] = useState('Select Movie');
+  const [eneteredTitle, setEnteredTitle] = useState('');
+  const [enteredReview, setEnteredReview] = useState('');
+  const [selectedRating, setSelectedRating] =useState('');
+  const [render, setRender] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('Error unable to Submit')
+
+  const addReview = (reviewObject) => {
+    console.log(reviewObject);
+    callApiAddReview(reviewObject).then(res => {
+      console.log("callApiAddReview returned: ", res)
+      var parsed = JSON.parse(res.express);
+      console.log("callApiAddReview parsed: ", parsed);
+    })
+  }
+
+  const callApiAddReview = async (reviewObject) => {
+    const url = serverURL + "/api/addReview";
+    console.log(url);
+    console.log(JSON.stringify(reviewObject))
+
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(reviewObject)
+    });
+    const body = await response.json();
+    if (response.status !== 200) throw Error(body.message);
+    console.log("movies found : ", body);
+    return body;
+  }
+  
+
+
+  const submitReview = () => {
+    if (selectedMovie.name !== 'Select Movie' && eneteredTitle !== '' && enteredReview !== '' && selectedRating !== ''
+    && selectedMovie.name !== 'Please Select a Movie' && eneteredTitle !== 'Please Enter a Title' && enteredReview !== 'Please Enter a Review' && selectedRating !== 'Please Select a Rating'){
+      let reviewSubmit = 
+      {
+        movieName: selectedMovie.name,
+        movieID: selectedMovie.id,
+        titleOfReview: eneteredTitle,
+        reviewText: enteredReview,
+        selectedRating: selectedRating
+      }
+      addReview(reviewSubmit);
+      setErrorMessage('Success! Review Submitted')
+    } else {
+      if (selectedMovie.name === 'Select Movie' || selectedMovie.name === 'Please Select a Movie') {
+        setSelectedMovie('Please Select a Movie')
+      }
+
+      if(eneteredTitle == '' || eneteredTitle == 'Please Enter a Title') {
+        setEnteredTitle('Please Enter a Title')
+      }
+
+      if(enteredReview == '' || enteredReview == 'Please Enter a Review') {
+        setEnteredReview('Please Enter a Review')
+      }
+
+      if(selectedRating == '' || selectedRating == 'Please Select a Rating') {
+        setSelectedRating('Please Select a Rating')
+      }
+
+    }
+    return(
+      setRender(true)
+    )
+  }
+  return (
+    
+    <Grid 
+      container
+      direction ='column'
+      justifyContent='center'
+      alignItems='center'
+      >
+      
+      <Grid item xs ={12}>
+      <Typography variant="h3">Review Vijay Movies</Typography>
+      </Grid>
+
+      <Grid item xs ={6}>
+        <MuiSelect selectedMovie = {selectedMovie} onChange = {value => setSelectedMovie(value)}/>
+      </Grid>
+
+      <Grid item xs ={12}>
+        <MuiTextField eneteredTitle= {eneteredTitle} onChange = {value => setEnteredTitle(value)}/>
+      </Grid>
+
+      <Grid item xs ={12}>
+        <MuiTextFieldMulti enteredReview= {enteredReview} onChange = {value => setEnteredReview(value)}/>
+      </Grid>
+
+      <Grid item xs = {12}>
+        <MuiRadioSelect selectedRating= {selectedRating} onChange = {value => setSelectedRating(value)} />
+      </Grid>
+
+      <Grid item>
+          <Button variant='contained' color='primary' onClick={submitReview}>Submit</Button>
+      </Grid>
+
+      {render &&
+       <><Grid item xs={12}>
+          <Typography variant="h6">Movie: {selectedMovie.name}</Typography>
+        </Grid>
+        
+        <Grid item xs={12}>
+          <Typography variant="h6">Review Title: {eneteredTitle}</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h6"> Review Text: {enteredReview}</Typography>
+        </Grid>
+        
+        <Grid item xs={12}>
+          <Typography variant="h6">Review Rating: {selectedRating}</Typography>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Typography variant="h6">Success or Failure: {errorMessage}</Typography>
+        </Grid>
+        </>
+      }
+    </Grid>
+  )
+}
+
 
 
 class Home extends Component {
@@ -111,57 +387,11 @@ class Home extends Component {
     return body;
   }
 
-  render() {
-    const { classes } = this.props;
+  render (){
 
-
-
-    const mainMessage = (
-      <Grid
-        container
-        spacing={0}
-        direction="column"
-        justify="flex-start"
-        alignItems="flex-start"
-        style={{ minHeight: '100vh' }}
-        className={classes.mainMessageContainer}
-      >
-        <Grid item>
-
-          <Typography
-            variant={"h3"}
-            className={classes.mainMessage}
-            align="flex-start"
-          >
-            {this.state.mode === 0 ? (
-              <React.Fragment>
-                Welcome to MSci245!
-              </React.Fragment>
-            ) : (
-              <React.Fragment>
-                Welcome back!
-              </React.Fragment>
-            )}
-          </Typography>
-
-        </Grid>
-      </Grid>
+    return(
+      <Review />
     )
-
-
-    return (
-      <MuiThemeProvider theme={theme}>
-        <div className={classes.root}>
-          <CssBaseline />
-          <Paper
-            className={classes.paper}
-          >
-            {mainMessage}
-          </Paper>
-
-        </div>
-      </MuiThemeProvider>
-    );
   }
 }
 
