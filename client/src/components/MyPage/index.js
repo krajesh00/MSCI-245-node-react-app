@@ -17,7 +17,7 @@ import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/core/Menu';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 const serverURL = "http://ec2-18-216-101-119.us-east-2.compute.amazonaws.com:3004"; //enable for dev mode
-
+//const serverURL ="";
 const MyPage = () => {
     const [genreList, setGenreList] = useState([])
     const [randomMovies, setRandomMovies] = useState([])
