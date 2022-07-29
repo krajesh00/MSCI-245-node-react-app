@@ -297,7 +297,7 @@ const Review = () =>  {
                     <Toolbar>
                         <Button color="inherit" onClick={() => history.push('/MyPage')}>Movie Recommendations</Button>
                         <Button color="inherit" onClick={() => history.push('/')}>Landing</Button>
-                        <Button color="inherit"onClick={() => history.push('/Search')}>Search</Button>
+                        <Button color="inherit" onClick={() => history.push('/Search')}>Search</Button>
                     </Toolbar>
                 </AppBar>
             </Box>

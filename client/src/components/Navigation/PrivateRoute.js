@@ -14,7 +14,7 @@ export default function PrivateRoute({
 
     <Router history={history}>
       <Switch>
-      <Route path="/Reviews" exact component={Home} />
+      <Route path="/reviews" exact component={Home} />
       <Route path="/" exact component={Landing} />
       <Route path="/MyPage" exact component={MyPage} />
       <Route path="/Search" exact component={Search} />

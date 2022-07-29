@@ -25,7 +25,7 @@ const Landing = () => {
                     <Toolbar>
                         <Button color="inherit" onClick={() => history.push('/MyPage')}>Movie Recommendations</Button>
                         <Button color="inherit" onClick={() => history.push('/Search')}>Search</Button>
-                        <Button color="inherit"onClick={() => history.push('/Reviews')}>Add a Review</Button>
+                        <Button color="inherit" onClick={() => history.push('/reviews')}>Add a Review</Button>
                     </Toolbar>
                 </AppBar>
             </Box>
