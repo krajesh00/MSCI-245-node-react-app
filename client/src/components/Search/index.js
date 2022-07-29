@@ -222,7 +222,7 @@ const Search = (onChange) => {
                 <Toolbar>
                     <Button color="inherit" onClick={() => history.push('/MyPage')}>Movie Recommendations</Button>
                     <Button color="inherit" onClick={() => history.push('/')}>Landing</Button>
-                    <Button color="inherit" onClick={() => history.push('/Home')}>Add a Review</Button>
+                    <Button color="inherit" onClick={() => history.push('/Reviews')}>Add a Review</Button>
                 </Toolbar>
             </AppBar>
         </Box>
