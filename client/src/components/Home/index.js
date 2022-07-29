@@ -8,7 +8,13 @@ import Typography from "@material-ui/core/Typography";
 import Paper from "@material-ui/core/Paper";
 import { useState } from 'react';
 import { Select, MenuItem, TextField, Radio, FormControl, InputLabel, Button } from '@material-ui/core';
-
+import AppBar from '@material-ui/core/AppBar';
+import Box from '@material-ui/core/Box';
+import Toolbar from '@material-ui/core/Toolbar';
+import IconButton from '@material-ui/core/IconButton';
+import MenuIcon from '@material-ui/core/Menu';
+import { Router, Switch, Route } from "react-router-dom";
+import history from '../Navigation/history';
 
 
 //Dev mode
@@ -277,6 +283,7 @@ const Review = () =>  {
       if(selectedRating == '' || selectedRating == 'Please Select a Rating') {
         setSelectedRating('Please Select a Rating')
       }
+      setErrorMessage('Error unable to Submit')
 
     }
     return(
@@ -284,61 +291,71 @@ const Review = () =>  {
     )
   }
   return (
-    
-    <Grid 
-      container
-      direction ='column'
-      justifyContent='center'
-      alignItems='center'
-      >
+    <>
+        <Box sx={{ flexGrow: 1 }}>
+                <AppBar position="static">
+                    <Toolbar>
+                        <Button color="inherit" onClick={() => history.push('/MyPage')}>Movie Recommendations</Button>
+                        <Button color="inherit" onClick={() => history.push('/')}>Landing</Button>
+                        <Button color="inherit"onClick={() => history.push('/Search')}>Search</Button>
+                    </Toolbar>
+                </AppBar>
+            </Box>
       
-      <Grid item xs ={12}>
-      <Typography variant="h3">Review Vijay Movies</Typography>
-      </Grid>
-
-      <Grid item xs ={6}>
-        <MuiSelect selectedMovie = {selectedMovie} onChange = {value => setSelectedMovie(value)}/>
-      </Grid>
-
-      <Grid item xs ={12}>
-        <MuiTextField eneteredTitle= {eneteredTitle} onChange = {value => setEnteredTitle(value)}/>
-      </Grid>
-
-      <Grid item xs ={12}>
-        <MuiTextFieldMulti enteredReview= {enteredReview} onChange = {value => setEnteredReview(value)}/>
-      </Grid>
-
-      <Grid item xs = {12}>
-        <MuiRadioSelect selectedRating= {selectedRating} onChange = {value => setSelectedRating(value)} />
-      </Grid>
-
-      <Grid item>
-          <Button variant='contained' color='primary' onClick={submitReview}>Submit</Button>
-      </Grid>
-
-      {render &&
-       <><Grid item xs={12}>
-          <Typography variant="h6">Movie: {selectedMovie.name}</Typography>
-        </Grid>
-        
-        <Grid item xs={12}>
-          <Typography variant="h6">Review Title: {eneteredTitle}</Typography>
+      <Grid 
+        container
+        direction ='column'
+        justifyContent='center'
+        alignItems='center'
+        > 
+        <Grid item xs ={12}>
+        <Typography variant="h3">Review Some Movies!</Typography>
         </Grid>
 
-        <Grid item xs={12}>
-          <Typography variant="h6"> Review Text: {enteredReview}</Typography>
-        </Grid>
-        
-        <Grid item xs={12}>
-          <Typography variant="h6">Review Rating: {selectedRating}</Typography>
+        <Grid item xs ={6}>
+          <MuiSelect selectedMovie = {selectedMovie} onChange = {value => setSelectedMovie(value)}/>
         </Grid>
 
-        <Grid item xs={12}>
-          <Typography variant="h6">Success or Failure: {errorMessage}</Typography>
+        <Grid item xs ={12}>
+          <MuiTextField eneteredTitle= {eneteredTitle} onChange = {value => setEnteredTitle(value)}/>
         </Grid>
-        </>
-      }
-    </Grid>
+
+        <Grid item xs ={12}>
+          <MuiTextFieldMulti enteredReview= {enteredReview} onChange = {value => setEnteredReview(value)}/>
+        </Grid>
+
+        <Grid item xs = {12}>
+          <MuiRadioSelect selectedRating= {selectedRating} onChange = {value => setSelectedRating(value)} />
+        </Grid>
+
+        <Grid item>
+            <Button variant='contained' color='primary' onClick={submitReview}>Submit</Button>
+        </Grid>
+
+        {render &&
+        <><Grid item xs={12}>
+            <Typography variant="h6">Movie: {selectedMovie.name}</Typography>
+          </Grid>
+          
+          <Grid item xs={12}>
+            <Typography variant="h6">Review Title: {eneteredTitle}</Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant="h6"> Review Text: {enteredReview}</Typography>
+          </Grid>
+          
+          <Grid item xs={12}>
+            <Typography variant="h6">Review Rating: {selectedRating}</Typography>
+          </Grid>
+
+          <Grid item xs={12}>
+            <Typography variant="h6">Success or Failure: {errorMessage}</Typography>
+          </Grid>
+          </>
+        }
+      </Grid>
+    </>
   )
 }
 
